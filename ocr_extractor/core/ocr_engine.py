@@ -167,7 +167,7 @@ class PaddleOCREngine:
         if not isinstance(value, (list, tuple)) or len(value) < 2:
             return False
         bbox, recognition = value[0], value[1]
-        return isinstance(bbox, (list, tuple)) and isinstance(recognition, (list, tuple)) and len(recognition) >= 2
+        return self._looks_like_bbox(bbox) and self._looks_like_recognition_pair(recognition)
 
     def _parse_legacy_line(self, line: Any) -> OCRTextBlock | None:
         """Parse one PaddleOCR 2.x line record."""
@@ -205,7 +205,36 @@ class PaddleOCREngine:
         if bbox is None:
             return []
 
-        points = np.array(bbox, dtype=float).reshape(-1, 2).tolist()
-        if len(points) < BBOX_POINTS:
+        try:
+            points = np.array(bbox, dtype=float).reshape(-1, 2).tolist()
+        except (TypeError, ValueError):
             return []
         return [[float(x), float(y)] for x, y in points[:BBOX_POINTS]]
+
+    def _looks_like_bbox(self, value: Any) -> bool:
+        """Return True when a value resembles four OCR polygon points."""
+        if not isinstance(value, (list, tuple)) or len(value) < BBOX_POINTS:
+            return False
+
+        try:
+            points = np.array(value, dtype=float).reshape(-1, 2)
+        except (TypeError, ValueError):
+            return False
+
+        return len(points) >= BBOX_POINTS
+
+    def _looks_like_recognition_pair(self, value: Any) -> bool:
+        """Return True when a value resembles a PaddleOCR text/confidence pair."""
+        if not isinstance(value, (list, tuple)) or len(value) < 2:
+            return False
+
+        text, confidence = value[0], value[1]
+        if not isinstance(text, str):
+            return False
+
+        try:
+            float(confidence)
+        except (TypeError, ValueError):
+            return False
+
+        return True

@@ -10,7 +10,6 @@ from rich.panel import Panel
 from rich.progress import (
     BarColumn,
     Progress,
-    SpinnerColumn,
     TaskProgressColumn,
     TextColumn,
     TimeElapsedColumn,
@@ -70,7 +69,6 @@ class RichLogger:
     def build_progress(self) -> Progress:
         """Create a reusable progress bar configured for file and page work."""
         return Progress(
-            SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
             BarColumn(),
             TaskProgressColumn(),
