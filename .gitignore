@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Runtime exports
+output/*
+!output/.gitkeep
+ocr_extractor/output/*
+!ocr_extractor/output/.gitkeep
+
+# Local sample documents
+ocr_extractor/samples/*
+!ocr_extractor/samples/.gitkeep
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
